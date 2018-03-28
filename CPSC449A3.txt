@@ -1,7 +1,7 @@
 main (cmndLine arg) :-
 	readFile(arg),
 	algorithm(0,0),
-	asserta(arg2(arg2)).
+	asserta(argumentTwo(arg2)).
 
 algorithm(X,Y) :- 		%x = machine .. y = task
 	X < 8,
@@ -37,7 +37,7 @@ algorithm(X,Y) :-
 	Y > 7,
 	X = 0,
 	% went through every possible combination, finished
-	arg2(B),
+	argumentTwo(B),
 	writeFile(B).
 
 isValid(X,Y) :-
