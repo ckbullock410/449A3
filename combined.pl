@@ -17,7 +17,21 @@ so you might have to use 'GLOBALSZ=500000 LOCALSZ=60000 gprolog min2.txt output2
 
 */
 
-
+% Changes definitions to variable
+:- dynamic(
+  contents/1,
+  forcedPartialAssignments/2,
+  forbiddenMachines/2,
+  tooNearTasks/2,
+  machinePenalties/3,             % ('Mach', 'Task', 'Penalty').  Eg: (1, 'A', 3)
+  tooNearPenalties/3,
+  exceptions/1,
+  bestValue/1,
+	bestList/1,
+	curPenalty/1,
+	unavailable/1,
+	comboPen/3,
+	isPair/2).
 
 
 % ALGORITHM PART --------------------------------------------------------------------------------
@@ -26,7 +40,7 @@ so you might have to use 'GLOBALSZ=500000 LOCALSZ=60000 gprolog min2.txt output2
 
 
 
-
+curPenalty(0).
 
 
 
@@ -46,9 +60,9 @@ printSol(X):-
 
 
 
-algorithm(0,6):-  		%6 should be 8
+algorithm(1,6):-  		%6 should be 8
 	% is finished
-	bestPenalty(A),
+	bestValue(A),
 	write('Best Solution Penalty: '),
 	write(A),
 	!.
@@ -102,7 +116,7 @@ algorithm(X,Y):-
 	C is A+F,
 	asserta(curPenalty(C)),
 	D is X+1,
-	algorithm(D,0),!.
+	algorithm(D,1),!.
 
 algorithm(X,Y):-
 	% was invalid check next task 
@@ -116,10 +130,10 @@ isValid(X,Y):-
 	notForcedAnother(X,Y),
 	penaltyNotBigger(X,Y).
 
-notTooNearTask(0,_):-!.
+notTooNearTask(1,_):-!.
 
 notTooNearTask(5,Y):-			%5 should be 7
-	isPair(0,A),
+	isPair(1,A),
 	\+(tooNearTasks(Y,A)),!.
 
 notTooNearTask(X,Y):-
@@ -140,33 +154,31 @@ penaltyNotBigger(X,Y):-
 
 calculatePenalty(X,Y,C):-
 	machinePenalties(X,Y,A),
-	checkTooNearPen(X,Y,B),
+	checktooNearPenalties(X,Y,B),
 	C is A+B.
 
-checkTooNearPen(0,_,A):- A = 0, !.
+checktooNearPenalties(1,_,A):- A = 0, !.
 
-checkTooNearPen(5,Y,A):-			%5 should be 7
+checktooNearPenalties(5,Y,A):-			%5 should be 7
 	\+(tooNearPenalties(Y,_,_)),
 	A = 0, !.
 
-checkTooNearPen(5,Y,A):-
-	isPair(0,B),
+checktooNearPenalties(5,Y,A):-
+	isPair(1,B),
 	tooNearPenalties(Y,B,C),
 	A = C , !.
 
-checkTooNearPen(X,Y,A):-
+checktooNearPenalties(X,Y,A):-
 	B is X-1,
 	isPair(B,C),
 	\+(tooNearPenalties(C,Y,_)),
 	A = 0, !.
 
-checkTooNearPen(X,Y,A):-
+checktooNearPenalties(X,Y,A):-
 	B is X-1,
 	isPair(B,C),
 	tooNearPenalties(C,Y,D),
 	A = D.
-
-
 
 
 
@@ -181,29 +193,9 @@ checkTooNearPen(X,Y,A):-
 
 
 
-
-
-% Changes definitions to variable
-:- dynamic(
-  contents/1,
-  forcedPartialAssignments/2,
-  forbiddenMachines/2,
-  tooNearTasks/2,
-  machinePenalties/3,             % ('Mach', 'Task', 'Penalty').  Eg: (1, 'A', 3)
-  tooNearPenalties/3,
-  exceptions/1,
-  bestValue/1,
-	bestList/1,
-	curPenalty/1,
-	unavailable/1,
-	comboPen/3,
-	isPair/2).
-
-
-
 % Lots of facts
 
-bestValue(200).
+bestValue(10000).
 bestList([]).
 
 taskLetter('A').
@@ -249,7 +241,7 @@ cmdInput :-
   argument_value(1, ARG_1),
   argument_value(2, ARG_2),
   runFiles(ARG_1,ARG_2),
-  algorithm(0,0).
+  algorithm(1,1).
 
 
 
@@ -599,8 +591,8 @@ getMachinePenalty_(I, Num, Row):-
 getWords(Line, M, T, R) :-
   getWord(Line, Word, R),!,
   penaltyNumber(Word, P, []),!,
-  numberToLetter(T, Letter),!,
-  assertz(machinePenalties(M, Letter, P)),!.
+  numberToLetter(T, Letter),!,							
+  assertz(machinePenalties(M, T, P)),!.			
 
 
 % Too near penalties.
