@@ -17,7 +17,7 @@ bestPenalty(1000000000).
 main :-
 	algorithm(0,0).
 
-storeSolutions(4):- !. 		%4 should be 8
+storeSolutions(6):- !. 		%6 should be 8
 storeSolutions(X):-
 	isPair(X,B),
 	solutionPair(X,B),
@@ -33,33 +33,33 @@ printSol(X):-
 
 
 
-algorithm(0,4):-  		%4 should be 8
+algorithm(0,6):-  		%6 should be 8
 	% is finished
 	bestPenalty(A),
 	write('Best Solution Penalty: '),
 	write(A),
 	!.
 
-algorithm(4,_):-					%4 should be 8
+algorithm(6,_):-					%6 should be 8
 	%new solution is found
-	isPair(3,A),					%3 should be 7
+	isPair(5,A),					%5 should be 7
 	retractall(solutionPairs(_,_)),
 	%storeSolutions(0),
 	retractall(bestPenalty(_)),
 	curPenalty(B),
 	asserta(bestPenalty(B)),
 	retract(unavailable(A)),
-	comboPen(3,A,C),				%3 should be 7
+	comboPen(5,A,C),				%5 should be 7
 	D is B-C,
 	retract(curPenalty(_)),
 	asserta(curPenalty(D)),
-	retract(isPair(3,_)),			%3 should be 7
+	retract(isPair(5,_)),			%5 should be 7
 	E is A+1,
-	printSol(0),
-	algorithm(3,E),					%3 should be 7
+	%printSol(0),
+	algorithm(5,E),					%5 should be 7
 	!.
 
-algorithm(A,4):-					%4 should be 8
+algorithm(A,6):-					%4 should be 8
 	%go back one machine
 	B is A-1,
 	isPair(B, C),
@@ -77,8 +77,8 @@ algorithm(A,4):-					%4 should be 8
 
 algorithm(X,Y):-
 	%check if valid combo
-	X < 4,					%4's should be 8's
-	Y < 4,
+	X < 6,					%6's should be 8's
+	Y < 6,
 	isValid(X,Y),
 	asserta(isPair(X,Y)),
 	asserta(unavailable(Y)),
@@ -89,7 +89,6 @@ algorithm(X,Y):-
 	C is A+F,
 	asserta(curPenalty(C)),
 	D is X+1,
-	write(X), write(':'), write(Y),nl,
 	algorithm(D,0),!.
 
 algorithm(X,Y):-
@@ -106,7 +105,7 @@ isValid(X,Y):-
 
 notTooNearTask(0,_):-!.
 
-notTooNearTask(3,Y):-			%3 should be 7
+notTooNearTask(5,Y):-			%5 should be 7
 	isPair(0,A),
 	\+(tooNearTask(Y,A)),!.
 
@@ -128,43 +127,51 @@ penaltyNotBigger(X,Y):-
 
 calculatePenalty(X,Y,C):-
 	machinePen(X,Y,A),
-	B = 0,
-	(\+ (tooNearPen(X,Y,_)) ; (tooNearPen(X,Y,B))),
+	checkTooNearPen(X,Y,B),
 	C is A+B.
 
+checkTooNearPen(0,_,A):- A = 0, !.
 
-% check =:= , and \+ to see if they do the right things
+checkTooNearPen(5,Y,A):-			%5 should be 7
+	\+(tooNearPen(Y,_,_)),
+	A = 0, !.
 
+checkTooNearPen(5,Y,A):-
+	isPair(0,B),
+	tooNearPen(Y,B,C),
+	A = C , !.
 
+checkTooNearPen(X,Y,A):-
+	B is X-1,
+	isPair(B,C),
+	\+(tooNearPen(C,Y,_)),
+	A = 0, !.
 
-
-
-
-
-
-
-
-
+checkTooNearPen(X,Y,A):-
+	B is X-1,
+	isPair(B,C),
+	tooNearPen(C,Y,D),
+	A = D.
 
 
 
 machinePen(0,0,1).
-machinePen(0,1,1).
-machinePen(0,2,1).
-machinePen(0,3,1).
-machinePen(0,4,1).
-machinePen(0,5,1).
-machinePen(0,6,1).
-machinePen(0,7,1).
+machinePen(0,1,2).
+machinePen(0,2,2).
+machinePen(0,3,2).
+machinePen(0,4,2).
+machinePen(0,5,2).
+machinePen(0,6,2).
+machinePen(0,7,2).
 
-machinePen(1,0,1).
+machinePen(1,0,2).
 machinePen(1,1,1).
-machinePen(1,2,1).
-machinePen(1,3,1).
-machinePen(1,4,1).
-machinePen(1,5,1).
-machinePen(1,6,1).
-machinePen(1,7,1).
+machinePen(1,2,2).
+machinePen(1,3,2).
+machinePen(1,4,2).
+machinePen(1,5,2).
+machinePen(1,6,2).
+machinePen(1,7,2).
 
 machinePen(2,0,1).
 machinePen(2,1,1).
