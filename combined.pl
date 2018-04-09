@@ -44,49 +44,52 @@ curPenalty(0).
 
 
 
-storeSolutions(6):- !. 		%6 should be 8
+main :-
+	algorithm(1,1).
+
+storeSolutions(9):- !. 		%6 should be 8
 storeSolutions(X):-
 	isPair(X,B),
-	solutionPair(X,B),
+	asserta(solutionPair(X,B)),
 	A is X+1,
 	storeSolutions(A).
 
-printSol(3):- nl.
+printSol(9):- 
+	bestValue(A),
+	write('Quality: '), write(A), nl,!.
 printSol(X):- 
 	solutionPair(X,A),
 	write(X), write(':'), write(A), write("   "),
 	B is X+1,
-	printCombos(B).
+	printSol(B).
 
 
 
-algorithm(1,6):-  		%6 should be 8
+algorithm(1,9):-  		%6 should be 8
 	% is finished
-	bestValue(A),
-	write('Best Solution Penalty: '),
-	write(A),
+	printSol(1),
 	!.
 
-algorithm(6,_):-					%6 should be 8
+algorithm(9,_):-					%6 should be 8
 	%new solution is found
-	isPair(5,A),					%5 should be 7
+	isPair(8,A),					%5 should be 7
 	retractall(solutionPairs(_,_)),
-	%storeSolutions(0),
+	storeSolutions(1),
 	retractall(bestValue(_)),
 	curPenalty(B),
 	asserta(bestValue(B)),
 	retract(unavailable(A)),
-	comboPen(5,A,C),				%5 should be 7
+	comboPen(8,A,C),				%5 should be 7
 	D is B-C,
 	retract(curPenalty(_)),
 	asserta(curPenalty(D)),
-	retract(isPair(5,_)),			%5 should be 7
+	retract(isPair(8,A)),			%5 should be 7
 	E is A+1,
-	%printSol(0),
-	algorithm(5,E),					%5 should be 7
+	printSol(1),
+	algorithm(8,E),					%5 should be 7
 	!.
 
-algorithm(A,6):-					%4 should be 8
+algorithm(A,9):-					%4 should be 8
 	%go back one machine
 	B is A-1,
 	isPair(B, C),
@@ -104,8 +107,8 @@ algorithm(A,6):-					%4 should be 8
 
 algorithm(X,Y):-
 	%check if valid combo
-	X < 6,					%6's should be 8's
-	Y < 6,
+	X < 9,					%6's should be 8's
+	Y < 9,
 	isValid(X,Y),
 	asserta(isPair(X,Y)),
 	asserta(unavailable(Y)),
@@ -123,6 +126,8 @@ algorithm(X,Y):-
 	A is Y+1,
 	algorithm(X,A).
 
+
+
 isValid(X,Y):-
 	\+ (unavailable(Y)),
 	\+ (forbiddenMachines(X,Y)),
@@ -132,7 +137,7 @@ isValid(X,Y):-
 
 notTooNearTask(1,_):-!.
 
-notTooNearTask(5,Y):-			%5 should be 7
+notTooNearTask(8,Y):-			%5 should be 7
 	isPair(1,A),
 	\+(tooNearTasks(Y,A)),!.
 
@@ -159,11 +164,11 @@ calculatePenalty(X,Y,C):-
 
 checktooNearPenalties(1,_,A):- A = 0, !.
 
-checktooNearPenalties(5,Y,A):-			%5 should be 7
+checktooNearPenalties(8,Y,A):-			%5 should be 7
 	\+(tooNearPenalties(Y,_,_)),
 	A = 0, !.
 
-checktooNearPenalties(5,Y,A):-
+checktooNearPenalties(8,Y,A):-			% should be 7
 	isPair(1,B),
 	tooNearPenalties(Y,B,C),
 	A = C , !.
@@ -179,7 +184,6 @@ checktooNearPenalties(X,Y,A):-
 	isPair(B,C),
 	tooNearPenalties(C,Y,D),
 	A = D.
-
 
 
 
