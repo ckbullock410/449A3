@@ -137,25 +137,25 @@ checktooNearPenalties(1,_,A):- A = 0, !.
 
 checktooNearPenalties(8,Y,A):-		
 	isPair(1,B),
-	tooNearPenalties(Y,B,C),
+	tooNearPenalties(Y,B,C),!,
 	A = C,
 	!.
 checktooNearPenalties(8,Y,A):-
 	isPair(1,B),
-	\+(tooNearPenalties(Y,B,_)),
+	\+(tooNearPenalties(Y,B,_)),!,
 	A = 0,!.
 
 
 checktooNearPenalties(X,Y,A):-
 	B is X-1,
 	isPair(B,C),
-	tooNearPenalties(C,Y,D),
+	tooNearPenalties(C,Y,D),!,
 	A = D,
 	!.
 checktooNearPenalties(X,Y,A):-
 	B is X-1,
 	isPair(B,C),
-	\+(tooNearPenalties(C,Y,_)),
+	\+(tooNearPenalties(C,Y,_)),!,
 	A = 0,!.
 
 
