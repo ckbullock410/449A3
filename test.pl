@@ -14,7 +14,99 @@ curPenalty(0).
 bestValue(1000000000).
 
 
+convertPenalties(1,8):-
+	machinePenalties(1,8,A),
+	asserta(machineOnePenalties(8,A)),
+	convertPenalties(2,1),!.
+
+convertPenalties(1,A):-
+	machinePenalties(1,A,B),
+	asserta(machineOnePenalties(A,B)),
+	C is A+1,
+	convertPenalties(1,C),!.
+
+convertPenalties(2,8):-
+	machinePenalties(2,8,A),
+	asserta(machineTwoPenalties(8,A)),
+	convertPenalties(3,1),!.
+
+convertPenalties(2,A):-
+	machinePenalties(2,A,B),
+	asserta(machineTwoPenalties(A,B)),
+	C is A+1,
+	convertPenalties(2,C),!.
+
+convertPenalties(3,8):-
+	machinePenalties(3,8,A),
+	asserta(machineThreePenalties(8,A)),
+	convertPenalties(4,1),!.
+
+convertPenalties(3,A):-
+	machinePenalties(3,A,B),
+	asserta(machineThreePenalties(A,B)),
+	C is A+1,
+	convertPenalties(3,C),!.
+
+convertPenalties(4,8):-
+	machinePenalties(4,8,A),
+	asserta(machineFourPenalties(8,A)),
+	convertPenalties(5,1),!.
+
+convertPenalties(4,A):-
+	machinePenalties(4,A,B),
+	asserta(machineFourPenalties(A,B)),
+	C is A+1,
+	convertPenalties(4,C),!.
+
+convertPenalties(5,8):-
+	machinePenalties(5,8,A),
+	asserta(machineFivePenalties(8,A)),
+	convertPenalties(6,1),!.
+
+convertPenalties(5,A):-
+	machinePenalties(5,A,B),
+	asserta(machineFivePenalties(A,B)),
+	C is A+1,
+	convertPenalties(5,C),!.
+
+convertPenalties(6,8):-
+	machinePenalties(6,8,A),
+	asserta(machineSixPenalties(8,A)),
+	convertPenalties(7,1),!.
+
+convertPenalties(6,A):-
+	machinePenalties(6,A,B),
+	asserta(machineSixPenalties(A,B)),
+	C is A+1,
+	convertPenalties(6,C),!.
+
+convertPenalties(7,8):-
+	machinePenalties(7,8,A),
+	asserta(machineSevenPenalties(8,A)),
+	convertPenalties(8,1),!.
+
+convertPenalties(7,A):-
+	machinePenalties(7,A,B),
+	asserta(machineSevenPenalties(7,B)),
+	C is A+1,
+	convertPenalties(7,C),!.
+
+convertPenalties(8,8):-
+	machinePenalties(2,8,A),
+	asserta(machineEightPenalties(8,A)),!.
+
+convertPenalties(8,A):-
+	machinePenalties(8,A,B),
+	asserta(machineEightPenalties(A,B)),
+	C is A+1,
+	convertPenalties(8,C),!.
+
+
+
+
+
 main :-
+	convertPenalties(1,1),
 	algorithm(1,1).
 
 storeSolutions(9):- !. 		%6 should be 8
@@ -128,8 +220,38 @@ penaltyNotBigger(X,Y):-
 	bestValue(D),!,
 	C < D.
 
+
+
+getMachinePenalties(1,A,B):-
+	machineOnePenalties(A,B),!.
+
+getMachinePenalties(2,A,B):-
+	machineTwoPenalties(A,B),!.
+
+getMachinePenalties(3,A,B):-
+	machineThreePenalties(A,B),!.
+
+getMachinePenalties(4,A,B):-
+	machineFourPenalties(A,B),!.
+
+getMachinePenalties(5,A,B):-
+	machineFivePenalties(A,B),!.
+
+getMachinePenalties(6,A,B):-
+	machineSixPenalties(A,B),!.
+
+getMachinePenalties(7,A,B):-
+	machineSevenPenalties(A,B),!.
+
+getMachinePenalties(8,A,B):-
+	machineEightPenalties(A,B),!.
+
+
+
+
+
 calculatePenalty(X,Y,C):-
-	machinePenalties(X,Y,A),!,
+	getMachinePenalties(X,Y,A),
 	checktooNearPenalties(X,Y,B),!,
 	C is A+B.
 
@@ -138,20 +260,19 @@ checktooNearPenalties(1,_,A):- A = 0, !.
 checktooNearPenalties(8,Y,A):-		
 	isPair(1,B),
 	tooNearPenalties(Y,B,C),!,
-	A = C,
-	!.
+	A = C, !.
+
 checktooNearPenalties(8,Y,A):-
 	isPair(1,B),
 	\+(tooNearPenalties(Y,B,_)),!,
 	A = 0,!.
 
-
 checktooNearPenalties(X,Y,A):-
 	B is X-1,
 	isPair(B,C),
 	tooNearPenalties(C,Y,D),!,
-	A = D,
-	!.
+	A = D, !.
+
 checktooNearPenalties(X,Y,A):-
 	B is X-1,
 	isPair(B,C),
