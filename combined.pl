@@ -33,6 +33,15 @@ so you might have to use 'GLOBALSZ=500000 LOCALSZ=60000 gprolog min2.txt output2
 	comboPen/3,
 	isPair/2).
 
+:- dynamic(machineOnePenalties/2).
+:- dynamic(machineTwoPenalties/2).
+:- dynamic(machineThreePenalties/2).
+:- dynamic(machineFourPenalties/2).
+:- dynamic(machineFivePenalties/2).
+:- dynamic(machineSixPenalties/2).
+:- dynamic(machineSevenPenalties/2).
+:- dynamic(machineEightPenalties/2).
+
 
 % ALGORITHM PART --------------------------------------------------------------------------------
 
@@ -43,151 +52,293 @@ so you might have to use 'GLOBALSZ=500000 LOCALSZ=60000 gprolog min2.txt output2
 curPenalty(0).
 
 
+convertPenalties(1,8):-
+  machinePenalties(1,8,A),
+  asserta(machineOnePenalties(8,A)),
+  convertPenalties(2,1),!.
 
-main :-
-	algorithm(1,1).
+convertPenalties(1,A):-
+  machinePenalties(1,A,B),
+  asserta(machineOnePenalties(A,B)),
+  C is A+1,
+  convertPenalties(1,C),!.
 
-storeSolutions(9):- !. 		%6 should be 8
+convertPenalties(2,8):-
+  machinePenalties(2,8,A),
+  asserta(machineTwoPenalties(8,A)),
+  convertPenalties(3,1),!.
+
+convertPenalties(2,A):-
+  machinePenalties(2,A,B),
+  asserta(machineTwoPenalties(A,B)),
+  C is A+1,
+  convertPenalties(2,C),!.
+
+convertPenalties(3,8):-
+  machinePenalties(3,8,A),
+  asserta(machineThreePenalties(8,A)),
+  convertPenalties(4,1),!.
+
+convertPenalties(3,A):-
+  machinePenalties(3,A,B),
+  asserta(machineThreePenalties(A,B)),
+  C is A+1,
+  convertPenalties(3,C),!.
+
+convertPenalties(4,8):-
+  machinePenalties(4,8,A),
+  asserta(machineFourPenalties(8,A)),
+  convertPenalties(5,1),!.
+
+convertPenalties(4,A):-
+  machinePenalties(4,A,B),
+  asserta(machineFourPenalties(A,B)),
+  C is A+1,
+  convertPenalties(4,C),!.
+
+convertPenalties(5,8):-
+  machinePenalties(5,8,A),
+  asserta(machineFivePenalties(8,A)),
+  convertPenalties(6,1),!.
+
+convertPenalties(5,A):-
+  machinePenalties(5,A,B),
+  asserta(machineFivePenalties(A,B)),
+  C is A+1,
+  convertPenalties(5,C),!.
+
+convertPenalties(6,8):-
+  machinePenalties(6,8,A),
+  asserta(machineSixPenalties(8,A)),
+  convertPenalties(7,1),!.
+
+convertPenalties(6,A):-
+  machinePenalties(6,A,B),
+  asserta(machineSixPenalties(A,B)),
+  C is A+1,
+  convertPenalties(6,C),!.
+
+convertPenalties(7,8):-
+  machinePenalties(7,8,A),
+  asserta(machineSevenPenalties(8,A)),
+  convertPenalties(8,1),!.
+
+convertPenalties(7,A):-
+  machinePenalties(7,A,B),
+  asserta(machineSevenPenalties(7,B)),
+  C is A+1,
+  convertPenalties(7,C),!.
+
+convertPenalties(8,8):-
+  machinePenalties(2,8,A),
+  asserta(machineEightPenalties(8,A)),!.
+
+convertPenalties(8,A):-
+  machinePenalties(8,A,B),
+  asserta(machineEightPenalties(A,B)),
+  C is A+1,
+  convertPenalties(8,C),!.
+
+
+storeSolutions(9):- !.    %6 should be 8
 storeSolutions(X):-
-	isPair(X,B),
-	asserta(solutionPair(X,B)),
-	A is X+1,
-	storeSolutions(A).
-
-printSol(9):- 
-	bestValue(A),
-	write('Quality: '), write(A), nl,!.
-printSol(X):- 
-	solutionPair(X,A),
-	write(X), write(':'), write(A), write("   "),
-	B is X+1,
-	printSol(B).
+  isPair(X,B),!,
+  asserta(solutionPair(X,B)),!,
+  A is X+1,!,
+  storeSolutions(A),!.
 
 
+algorithm(1,9):-      %6 should be 8
+  % is finished
+  %printSol(1),
+  !.
 
-algorithm(1,9):-  		%6 should be 8
-	% is finished
-	printSol(1),
-	!.
+algorithm(9,_):-          %6 should be 8
+  %new solution is found
+  isPair(8,A),!,          %5 should be 7
+  retractall(solutionPairs(_,_)),!,
+  storeSolutions(1),!,
+  retractall(bestValue(_)),!,
+  curPenalty(B),!,
+  asserta(bestValue(B)),!,
+  retract(unavailable(A)),!,
+  comboPen(8,A,C),!,        %5 should be 7
+  D is B-C,!,
+  retract(curPenalty(_)),!,
+  asserta(curPenalty(D)),!,
+  retract(isPair(8,A)),!,     %5 should be 7
+  E is A+1,!,
+  %printSol(1),!,
+  algorithm(8,E),         %5 should be 7
+  !.
 
-algorithm(9,_):-					%6 should be 8
-	%new solution is found
-	isPair(8,A),					%5 should be 7
-	retractall(solutionPairs(_,_)),
-	storeSolutions(1),
-	retractall(bestValue(_)),
-	curPenalty(B),
-	asserta(bestValue(B)),
-	retract(unavailable(A)),
-	comboPen(8,A,C),				%5 should be 7
-	D is B-C,
-	retract(curPenalty(_)),
-	asserta(curPenalty(D)),
-	retract(isPair(8,A)),			%5 should be 7
-	E is A+1,
-	printSol(1),
-	algorithm(8,E),					%5 should be 7
-	!.
-
-algorithm(A,9):-					%4 should be 8
-	%go back one machine
-	B is A-1,
-	isPair(B, C),
-	D is C+1,
-	retract(unavailable(C)),
-	retract(isPair(B,C)),
-	comboPen(B,C,E),
-	curPenalty(F),
-	G is F-E,
-	retract(comboPen(B,C,_)),
-	retract(curPenalty(_)),
-	asserta(curPenalty(G)),
-	algorithm(B,D),
-	!.
+algorithm(A,9):-          %4 should be 8
+  %go back one machine
+  B is A-1,!,
+  isPair(B, C),!,
+  D is C+1,!,
+  retract(unavailable(C)),!,
+  retract(isPair(B,C)),!,
+  comboPen(B,C,E),!,
+  curPenalty(F),!,
+  G is F-E,!,
+  retract(comboPen(B,C,_)),
+  retract(curPenalty(_)),
+  asserta(curPenalty(G)),
+  algorithm(B,D),!,
+  !.
 
 algorithm(X,Y):-
-	%check if valid combo
-	X < 9,					%6's should be 8's
-	Y < 9,
-	isValid(X,Y),
-	asserta(isPair(X,Y)),
-	asserta(unavailable(Y)),
-	calculatePenalty(X,Y,F),
-	curPenalty(A),
-	asserta(comboPen(X,Y,F)),
-	retract(curPenalty(_)),
-	C is A+F,
-	asserta(curPenalty(C)),
-	D is X+1,
-	algorithm(D,1),!.
+  %check if valid combo
+  X < 9,        %6's should be 8's
+  Y < 9,
+  isValid(X,Y),!,
+  asserta(isPair(X,Y)),!,
+  asserta(isPair(X,Y)),!,
+  asserta(unavailable(Y)),!,
+  calculatePenalty(X,Y,F),!,
+  curPenalty(A),!,
+  asserta(comboPen(X,Y,F)),!,
+  retract(curPenalty(_)),!,
+  C is A+F,!,
+  asserta(curPenalty(C)),!,
+  D is X+1,!,
+  algorithm(D,1),!.
 
 algorithm(X,Y):-
-	% was invalid check next task 
-	A is Y+1,
-	algorithm(X,A).
+  % was invalid check next task
+  A is Y+1,!,
+  algorithm(X,A).
 
 
 
 isValid(X,Y):-
-	\+ (unavailable(Y)),
-	\+ (forbiddenMachines(X,Y)),
-	notTooNearTask(X,Y),
-	notForcedAnother(X,Y),
-	penaltyNotBigger(X,Y).
+  \+ (unavailable(Y)),!,
+  \+ (forbiddenMachines(X,Y)),!,
+  notTooNearTask(X,Y),!,
+  notForcedAnother(X,Y),!,
+  penaltyNotBigger(X,Y).
 
 notTooNearTask(1,_):-!.
 
-notTooNearTask(8,Y):-			%5 should be 7
-	isPair(1,A),
-	\+(tooNearTasks(Y,A)),!.
+notTooNearTask(8,Y):-     %5 should be 7
+  isPair(1,A),!,
+  \+(tooNearTasks(Y,A)),!.
 
 notTooNearTask(X,Y):-
-	A is X-1,
-	isPair(A, B),
-	\+ (tooNearTasks(B,Y)).
+  A is X-1,!,
+  isPair(A, B),!,
+  \+ (tooNearTasks(B,Y)).
 
 notForcedAnother(X,Y):-
-	(\+(forcedPartialAssignments(X,_));(forcedPartialAssignments(X,A), A =:= Y)),
-	(\+(forcedPartialAssignments(_,Y));(forcedPartialAssignments(B,Y), B =:= X)).
+  (\+(forcedPartialAssignments(X,_));(forcedPartialAssignments(X,A), A =:= Y)),!,
+  (\+(forcedPartialAssignments(_,Y));(forcedPartialAssignments(B,Y), B =:= X)).
 
 penaltyNotBigger(X,Y):-
-	calculatePenalty(X,Y,A),
-	curPenalty(B),
-	C is A+B,
-	bestValue(D),
-	C < D.
+  calculatePenalty(X,Y,A),!,
+  curPenalty(B),!,
+  C is A+B,!,
+  bestValue(D),!,
+  C < D.
+
+
+
+getMachinePenalties(1,A,B):-
+  machineOnePenalties(A,B),!.
+
+getMachinePenalties(2,A,B):-
+  machineTwoPenalties(A,B),!.
+
+getMachinePenalties(3,A,B):-
+  machineThreePenalties(A,B),!.
+
+getMachinePenalties(4,A,B):-
+  machineFourPenalties(A,B),!.
+
+getMachinePenalties(5,A,B):-
+  machineFivePenalties(A,B),!.
+
+getMachinePenalties(6,A,B):-
+  machineSixPenalties(A,B),!.
+
+getMachinePenalties(7,A,B):-
+  machineSevenPenalties(A,B),!.
+
+getMachinePenalties(8,A,B):-
+  machineEightPenalties(A,B),!.
+
 
 calculatePenalty(X,Y,C):-
-	machinePenalties(X,Y,A),
-	checktooNearPenalties(X,Y,B),
-	C is A+B.
+  getMachinePenalties(X,Y,A),
+  checktooNearPenalties(X,Y,B),!,
+  C is A+B.
 
 checktooNearPenalties(1,_,A):- A = 0, !.
 
-checktooNearPenalties(8,Y,A):-			%5 should be 7
-	\+(tooNearPenalties(Y,_,_)),
-	A = 0, !.
+checktooNearPenalties(8,Y,A):-    
+  isPair(1,B),
+  tooNearPenalties(Y,B,C),!,
+  A = C, !.
 
-checktooNearPenalties(8,Y,A):-			% should be 7
-	isPair(1,B),
-	tooNearPenalties(Y,B,C),
-	A = C , !.
-
-checktooNearPenalties(X,Y,A):-
-	B is X-1,
-	isPair(B,C),
-	\+(tooNearPenalties(C,Y,_)),
-	A = 0, !.
+checktooNearPenalties(8,Y,A):-
+  A = 0,!.
 
 checktooNearPenalties(X,Y,A):-
-	B is X-1,
-	isPair(B,C),
-	tooNearPenalties(C,Y,D),
-	A = D.
+  B is X-1,
+  isPair(B,C),
+  tooNearPenalties(C,Y,D),!,
+  A = D, !.
+
+checktooNearPenalties(X,Y,A):-
+  A = 0,!.
+
+
+checkIfSolutions :-
+  solutionPair(_,_),!.
+
+checkIfSolutions :- !.
+ %Output No Valid Solutions!  <------
+
+
+outputSolution :-
+  argument_value(2,FileName),
+  checkIfSolutions,
+  open(FileName, write, Stream),
+  solutionPair(1,A),
+  solutionPair(2,B),
+  solutionPair(3,C),
+  solutionPair(4,D),
+  solutionPair(5,E),
+  solutionPair(6,F),
+  solutionPair(7,G),
+  solutionPair(8,H),
+
+  numberToLetter(A, AA),
+  numberToLetter(B, BB),
+  numberToLetter(C, CC),
+  numberToLetter(D, DD),
+  numberToLetter(E, EE),
+  numberToLetter(F, FF),
+  numberToLetter(G, GG),
+  numberToLetter(H, HH),
 
 
 
+  write(Stream, AA), write(Stream, ' '),
+  write(Stream, BB), write(Stream, ' '),
+  write(Stream, CC),write(Stream, ' '),
+  write(Stream, DD),write(Stream, ' '),
+  write(Stream, EE),write(Stream, ' '),
+  write(Stream, FF),write(Stream, ' '),
+  write(Stream, GG),write(Stream, ' '),
+  write(Stream, HH),write(Stream, ' '),
 
+  bestValue(V),
+  write(Stream, '; Quality: '),
+  write(Stream, V),
+
+
+  close(Stream),!.
 
 
 
@@ -245,7 +396,9 @@ cmdInput :-
   argument_value(1, ARG_1),
   argument_value(2, ARG_2),
   runFiles(ARG_1,ARG_2),
-  algorithm(1,1).
+  convertPenalties(1,1),
+  algorithm(1,1),
+  outputSolution.
 
 
 
@@ -449,9 +602,10 @@ getPartialAssignment(_) :-
 getPartialAssignment_(I) :-
   exceptions(nil),!,
   putTriple(I, M, T),!,
+  numberToLetter(N,T),!,
   \+ forcedPartialAssignments(M,X),!,
-  \+ forcedPartialAssignments(Y,T),!,
-  assertz(forcedPartialAssignments(M,T)), !.
+  \+ forcedPartialAssignments(Y,N),!,
+  assertz(forcedPartialAssignments(M,N)), !.
 
 putTriple(Word, M, T) :-
   putTriple_(Word, M, T).
@@ -490,7 +644,8 @@ getForbiddenMachine(_) :-
 getForbiddenMachine_(I) :-
   exceptions(nil),
   fmTriple(I, M, T),!,
-  assertz(forbiddenMachines(M,T)), !.
+  numberToLetter(N,T),!,
+  assertz(forbiddenMachines(M,N)), !.
 
 fmTriple(Word, M, T) :-
   fmTriple_(Word, M, T).
@@ -527,7 +682,9 @@ getTooNearTask(_) :-
 getTooNearTask_(I) :-
   exceptions(nil),
   tnTriple(I, M, T),!,
-  assertz(tooNearTasks(M,T)), !.
+  numberToLetter(N,M),!,
+  numberToLetter(O,T),!,
+  assertz(tooNearTasks(N,O)), !.
 
 tnTriple(Word, M, T) :-
   tnTriple_(Word, M, T).
@@ -595,8 +752,8 @@ getMachinePenalty_(I, Num, Row):-
 getWords(Line, M, T, R) :-
   getWord(Line, Word, R),!,
   penaltyNumber(Word, P, []),!,
-  numberToLetter(T, Letter),!,							
-  assertz(machinePenalties(M, T, P)),!.			
+  numberToLetter(T, Letter),!,
+  assertz(machinePenalties(M, T, P)),!.
 
 
 % Too near penalties.
@@ -618,7 +775,9 @@ getTooNearPenalty(_) :-
 getTooNearPenalty_(I) :-
   exceptions(nil),
   tnpQuad(I, M, T, P),!,
-  assertz(tooNearPenalties(M,T,P)), !.
+  numberToLetter(N,M),!,
+  numberToLetter(O,T),!,
+  assertz(tooNearPenalties(N,O,P)), !.
 
 tnpQuad(Word, M, T, P) :-
   tnpQuad_(Word, M, T, P).
