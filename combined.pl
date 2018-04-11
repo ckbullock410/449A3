@@ -275,7 +275,7 @@ calculatePenalty(X,Y,C):-
 
 checktooNearPenalties(1,_,A):- A = 0, !.
 
-checktooNearPenalties(8,Y,A):-    
+checktooNearPenalties(8,Y,A):-
   isPair(1,B),
   tooNearPenalties(Y,B,C),!,
   A = C, !.
@@ -293,16 +293,26 @@ checktooNearPenalties(X,Y,A):-
   A = 0,!.
 
 
-checkIfSolutions :-
-  solutionPair(_,_),!.
+checkIfSolutions(A) :-
+  A =:= 99999999999,!,
 
-checkIfSolutions :- !.
- %Output No Valid Solutions!  <------
+  exceptions(nil),
+  retract(exceptions(nil)),
+  asserta(exceptions(noValidSolution)),
+
+  argument_value(2, FileName),
+  exceptions(X),
+  parseerrors(X, FileName).
+
+checkIfSolutions(A) :-
+  write('ABC'),
+  bestValue(B).
 
 
 outputSolution :-
   argument_value(2,FileName),
-  checkIfSolutions,
+  bestValue(V),
+  checkIfSolutions(V),
   open(FileName, write, Stream),
   solutionPair(1,A),
   solutionPair(2,B),
@@ -331,9 +341,9 @@ outputSolution :-
   write(Stream, EE),write(Stream, ' '),
   write(Stream, FF),write(Stream, ' '),
   write(Stream, GG),write(Stream, ' '),
-  write(Stream, HH),write(Stream, ' '),
+  write(Stream, HH),
 
-  bestValue(V),
+
   write(Stream, '; Quality: '),
   write(Stream, V),
 
@@ -350,7 +360,7 @@ outputSolution :-
 
 % Lots of facts
 
-bestValue(10000).
+bestValue(99999999999).
 bestList([]).
 
 taskLetter('A').
