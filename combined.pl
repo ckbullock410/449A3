@@ -150,7 +150,7 @@ storeSolutions(X):-
 
 algorithm(1,9):-      %6 should be 8
   % is finished
-  printSol(1),
+  %printSol(1),
   !.
 
 algorithm(9,_):-          %6 should be 8
@@ -294,28 +294,51 @@ checktooNearPenalties(X,Y,A):-
 
 
 checkIfSolutions :-
-  solutionPair(_,_).
+  solutionPair(_,_),!.
 
-checkIfSolutions :-
-  write('No valid Solution!').
-  %Output No Valid Solutions!  <------
+checkIfSolutions :- !.
+ %Output No Valid Solutions!  <------
 
-printSol(9, Stream):-
-  bestValue(A),
-  write(Stream,'; Quality: '), write(Stream, A), !.
-
-printSol(X, Stream):-
-  solutionPair(X,A),
-  numberToLetter(A,B),
-  write(Stream, B), write(Stream, " "),
-  B is X+1,
-  printSol(B).
 
 outputSolution :-
   argument_value(2,FileName),
   checkIfSolutions,
   open(FileName, write, Stream),
-  printSol(1, Stream).
+  solutionPair(1,A),
+  solutionPair(2,B),
+  solutionPair(3,C),
+  solutionPair(4,D),
+  solutionPair(5,E),
+  solutionPair(6,F),
+  solutionPair(7,G),
+  solutionPair(8,H),
+
+  numberToLetter(A, AA),
+  numberToLetter(B, BB),
+  numberToLetter(C, CC),
+  numberToLetter(D, DD),
+  numberToLetter(E, EE),
+  numberToLetter(F, FF),
+  numberToLetter(G, GG),
+  numberToLetter(H, HH),
+
+
+
+  write(Stream, AA), write(Stream, ' '),
+  write(Stream, BB), write(Stream, ' '),
+  write(Stream, CC),write(Stream, ' '),
+  write(Stream, DD),write(Stream, ' '),
+  write(Stream, EE),write(Stream, ' '),
+  write(Stream, FF),write(Stream, ' '),
+  write(Stream, GG),write(Stream, ' '),
+  write(Stream, HH),write(Stream, ' '),
+
+  bestValue(V),
+  write(Stream, '; Quality: '),
+  write(Stream, V),
+
+
+  close(Stream),!.
 
 
 
