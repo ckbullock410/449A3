@@ -1,0 +1,28 @@
+Name:
+asymmetrical
+
+forced partial assignment:
+(1,A)
+(2,B)
+(3,C)
+(4,D)
+(5,E)
+(6,F)
+
+forbidden machine:
+ 
+too-near tasks:
+(G,H)
+
+machine penalties:
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+
+too-near penalities
+

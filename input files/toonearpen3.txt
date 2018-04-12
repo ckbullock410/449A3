@@ -1,0 +1,31 @@
+Name:
+toonearpen3
+
+forced partial assignment:
+(1,E)
+(2,F)
+(3,G)
+(4,H)
+(5,A)
+
+forbidden machine:
+(6,B)
+ 
+too-near tasks:
+
+machine penalties:
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+
+too-near penalities
+(A,C,3)
+(C,D,7)
+(B,D,7)
+(D,C,9)
+(B,C,8)
