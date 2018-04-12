@@ -1,0 +1,20 @@
+invalid2.txt "A B C D E F H G; Quality: 8" should be "No valid solution possible!"
+
+invalidtoonear.txt "A B C D E F G H; Quality: 8" should be "No valid solution possible!"
+
+machpen1.txt "A B C D E F G H; Quality: 17" should be "A B C D E F G H; Quality: 36"
+
+nochoice.txt "No valid solution possible!" should be "Solution H G F E D C B A; Quality: 800"
+
+nochoice2.txt "No valid solution possible!" should be "Solution A B C D E F G H; Quality: 8"
+
+optzero.txt "A B C D E F G H; Quality: 1" should be "A B C D E F G H; Quality: 0"
+
+toonearpen1.txt "A B C D E H G F; Quality: 17" should be "A B C D E H F G; Quality: 16"
+
+toonearpen2.txt "A B C D E H G F; Quality: 24" should be "A B C D E G F H; Quality: 18"
+
+toonearpen3.txt "No valid solution possible!" should be "E F G H A D B C; Quality: 16"
+
+
+
