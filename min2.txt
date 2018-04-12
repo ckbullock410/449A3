@@ -7,9 +7,7 @@ minimalisticexample
 
 
 forced partial assignment:
-(1,A)
-(2,B)
-(3,C)
+
 
 
 
@@ -35,8 +33,3 @@ machine penalties:
 
 
 too-near penalities
-
-
-
-
-

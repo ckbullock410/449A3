@@ -48,6 +48,8 @@ so you might have to use 'GLOBALSZ=500000 LOCALSZ=60000 gprolog min2.txt output2
 
 curPenalty(0).
 
+
+
 convertPenalties(1,8):-
   machinePenalties(1,8,A),
   asserta(machineOnePenalties(8,A)),
@@ -137,14 +139,12 @@ convertPenalties(8,A):-
 
 
 
-storeSolutions(9):- !.    %6 should be 8
+storeSolutions(9):- !.
 storeSolutions(X):-
   isPair(X,B),!,
   asserta(solutionPair(X,B)),!,
   A is X+1,!,
   storeSolutions(A),!.
-
-/*
 
 printSol(_):-
   bestValue(A),
@@ -158,13 +158,13 @@ printSol(X):-
   write(A), write(" "),
   B is X+1,
   printSol(B).
-*/
 
 
 
-algorithm(1,9):-      %6 should be 8
+algorithm(1,9):-
   % is finished
-  A = 1, !.
+  %printSol(1),
+  !.
 
 algorithm(9,_):-          %6 should be 8
   %new solution is found
@@ -206,22 +206,38 @@ algorithm(X,Y):-
   X < 9,        %6's should be 8's
   Y < 9,
   isValid(X,Y),!,
-  asserta(isPair(X,Y)),!,
-  asserta(isPair(X,Y)),!,
+    asserta(isPair(X,Y)),!,
   asserta(unavailable(Y)),!,
-  calculatePenalty(X,Y,F),!,
-  curPenalty(A),!,
-  asserta(comboPen(X,Y,F)),!,
-  retract(curPenalty(_)),!,
-  C is A+F,!,
-  asserta(curPenalty(C)),!,
+
+  %calculatePenalty(X,Y,F),!,
+  %curPenalty(A),!,
+  %asserta(comboPen(X,Y,F)),!,
+  %retract(curPenalty(_)),!,
+  %C is A+F,!,
+  %asserta(curPenalty(C)),!,
+
   D is X+1,!,
-  algorithm(D,1),!.
+  findAvailable(1,A),
+  algorithm(D,A),!.
 
 algorithm(X,Y):-
   % was invalid check next task
   A is Y+1,!,
   algorithm(X,A).
+
+
+
+findAvailable(9,A):-
+  A = 9,!.
+
+findAvailable(X,A):-
+  unavailable(X),
+  B is X+1,
+  findAvailable(B,A),!.
+
+findAvailable(X,A):-
+  A = X,!.
+
 
 
 
@@ -234,7 +250,7 @@ isValid(X,Y):-
 
 notTooNearTask(1,_):-!.
 
-notTooNearTask(8,Y):-     
+notTooNearTask(8,Y):-
   isPair(1,A),!,
   \+(tooNearTasks(Y,A)),!,
   isPair(7,B),!,
@@ -243,7 +259,7 @@ notTooNearTask(8,Y):-
 notTooNearTask(X,Y):-
   A is X-1,!,
   isPair(A, B),!,
-  \+ (tooNearTasks(B,Y)).
+  \+ (tooNearTasks(B,Y)),!.
 
 
 notForcedAnother(X,Y):-
@@ -256,7 +272,10 @@ penaltyNotBigger(X,Y):-
   curPenalty(B),!,
   C is A+B,!,
   bestValue(D),!,
-  C < D.
+  C < D,
+  retract(curPenalty(_)),
+  asserta(curPenalty(C)),
+  asserta(comboPen(X,Y,A)),!.
 
 
 
@@ -284,7 +303,6 @@ getMachinePenalties(7,A,B):-
 
 getMachinePenalties(8,A,B):-
   machineEightPenalties(A,B),!.
-
 
 
 
@@ -323,6 +341,7 @@ checktooNearPenalties(X,Y,A):-
 
 checktooNearPenalties(_,_,A):-
   A = 0,!.
+
 
 
 checkIfSolutions(A) :-
@@ -445,6 +464,14 @@ cmdInput :-
 
 
 retractRule :-
+  retractall(unavailable(_)),
+  retractall(machinePenalties(1,_,_)),
+  retractall(machinePenalties(2,_,_)),
+  retractall(machinePenalties(3,_,_)),
+  retractall(machinePenalties(4,_,_)),
+  retractall(machinePenalties(5,_,_)),
+  retractall(machinePenalties(6,_,_)),
+  retractall(machinePenalties(8,_,_)),
   retractall(streamToLetter(_,_,_)),
   retractall(taskLetter(_)).
 
