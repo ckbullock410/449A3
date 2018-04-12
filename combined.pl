@@ -19,6 +19,8 @@ so you might have to use 'GLOBALSZ=500000 LOCALSZ=60000 gprolog min2.txt output2
 
 % Changes definitions to variable
 :- dynamic(
+  streamToLetter/3,
+  taskLetter/1,
   contents/1,
   forcedPartialAssignments/2,
   forbiddenMachines/2,
@@ -305,7 +307,6 @@ checkIfSolutions(A) :-
   parseerrors(X, FileName).
 
 checkIfSolutions(A) :-
-  write('ABC'),
   bestValue(B).
 
 
@@ -407,11 +408,16 @@ cmdInput :-
   argument_value(2, ARG_2),
   runFiles(ARG_1,ARG_2),
   convertPenalties(1,1),
+  retractRule,
   algorithm(1,1),
   outputSolution.
 
 
 
+retractRule :-
+  retractall(machinePenalties(_,_,_)),
+  retractall(streamToLetter(_,_,_)),
+  retractall(taskLetter(_)).
 
 
 
@@ -512,11 +518,16 @@ readFile.
 
 readFile_ :-
   contents(X),!,
-  titleLine(X, R1),!,
-  fpaLine(R1, R2),!,
-  fmLine(R2,R3),!,
-  tntLine(R3, R4),!,
-  mpLine(R4, R5), !,
+  titleLine(X, RX1),!,
+  removeExtraSpace(RX1, R1),!,
+  fpaLine(R1, RX2),!,
+  removeExtraSpace(RX2, R2),!,
+  fmLine(R2,RX3),!,
+  removeExtraSpace(RX3, R3),!,
+  tntLine(R3, RX4),!,
+  removeExtraSpace(RX4, R4),!,
+  mpLine(R4, RX5),!,
+  removeExtraSpace(RX5, R5),!,
   tnpLine(R5, R6),!,
   endOfFile(R6).
 
@@ -926,6 +937,24 @@ isDigit(N) :- N > 47,!, N < 58.
 endOfLine(X, R) :- withoutPrefix(" ", X, R1), endOfLine(R1, R).
 endOfLine(X, R) :- withoutPrefix("\r",X,R1), endOfLine(R1,R).
 endOfLine(X, R) :- withoutPrefix("\n", X, R).
+  % getSecondElem(X,S),!,
+  %
+  % (S =:= 10
+  % -> write('newLine '), withoutPrefix("\n", X, R1), endOfLine(R1,R)
+  % ; write('not '), withoutPrefix("\n", X, R)
+  % ).
+
+
+removeExtraSpace(X, R):-
+  getFistElem(X,F),!,
+  (F == 10
+  -> withoutPrefix("\n", X, R1), removeExtraSpace(R1, R)
+  ; R = X
+  ).
+
+
+
+
 
 % Converts to Atom
 toAtoms([H|[]],[C]) :- atom_codes(C, [H]).
@@ -943,3 +972,9 @@ withoutLastElem([H|T], [H|Q]) :- withoutLastElem(T, Q).
 withoutPrefix([], Y, Y).
 withoutPrefix([H|[]], [H|Y], Y).
 withoutPrefix([H|X], [H|Y], R) :- withoutPrefix(X, Y, R).
+
+getSecondElem([H|R], Z):-
+  getFistElem(R,Z).
+
+getFistElem([H|R], Z):-
+  Z is H.
