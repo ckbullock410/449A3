@@ -7,7 +7,7 @@ minimalisticexample
 
 
 forced partial assignment:
-
+(1,A)
 
 
 

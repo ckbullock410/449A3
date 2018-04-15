@@ -7,7 +7,7 @@ Right now to run, you need to use gprolog instead of swipl (I couldn't figure ou
 To run:
   - gprolog min2.txt output2.txt
   - [main].
-You can then check the contents of the different penalties (Eg: tooNearTasks(X,Y).)
+
 For some reason the stack size for gprolog is really small
 so you might have to use 'GLOBALSZ=500000 LOCALSZ=60000 gprolog min2.txt output2.txt' instead.
 */
@@ -28,6 +28,7 @@ so you might have to use 'GLOBALSZ=500000 LOCALSZ=60000 gprolog min2.txt output2
 	curPenalty/1,
 	unavailable/1,
 	comboPen/3,
+  solutionPair/2,
 	isPair/2).
 
 :- dynamic(machineOnePenalties/2).
